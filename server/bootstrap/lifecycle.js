@@ -90,6 +90,7 @@ async function bootstrapLifecycles({ strapi }) {
 				}
 				const records = await strapi.entityService.findMany(uid, {
 					filters: { id: event.state.io.ids },
+					populate: ['deep'],
 				});
 
 				records.forEach((r) => {
@@ -145,7 +146,7 @@ function buildEventQuery({ event }) {
 
 	if (event.params.where) {
 		query.filters = event.params.where;
-		query.populate = '*';
+		query.populate = ['deep'];
 	}
 
 	if (event.result?.count) {
@@ -159,14 +160,14 @@ function buildEventQuery({ event }) {
 			query.filters = {
 				id: event.result.id,
 			};
-			query.populate = '*';
+			query.populate = ['deep'];
 			break;
 		}
 		case 'afterCreateMany': {
 			query.filters = {
 				id: event.result.ids,
 			};
-			query.populate = '*';
+			query.populate = ['deep'];
 			break;
 		}
 		case 'beforeUpdate': {
