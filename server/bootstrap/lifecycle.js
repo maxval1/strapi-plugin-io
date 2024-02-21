@@ -1,5 +1,7 @@
 'use strict';
 
+const { getFullPopulateObject } = require('../utils/getFullPopulateObject');
+
 /**
  * Bootstrap lifecycles
  *
@@ -90,7 +92,7 @@ async function bootstrapLifecycles({ strapi }) {
 				}
 				const records = await strapi.entityService.findMany(uid, {
 					filters: { id: event.state.io.ids },
-					populate: ['deep'],
+					populate: '*',
 				});
 
 				records.forEach((r) => {
@@ -146,7 +148,7 @@ function buildEventQuery({ event }) {
 
 	if (event.params.where) {
 		query.filters = event.params.where;
-		query.populate = ['deep'];
+		query.populate = getFullPopulateObject(event.model.uid, 5).populate;
 	}
 
 	if (event.result?.count) {
@@ -160,14 +162,14 @@ function buildEventQuery({ event }) {
 			query.filters = {
 				id: event.result.id,
 			};
-			query.populate = ['deep'];
+			query.populate = getFullPopulateObject(event.model.uid, 5).populate;
 			break;
 		}
 		case 'afterCreateMany': {
 			query.filters = {
 				id: event.result.ids,
 			};
-			query.populate = ['deep'];
+			query.populate = getFullPopulateObject(event.model.uid, 5).populate;
 			break;
 		}
 		case 'beforeUpdate': {
